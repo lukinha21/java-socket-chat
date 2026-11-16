@@ -1,165 +1,113 @@
-ChatRedes
-📡 Descrição
-ChatRedes é um sistema de chat com múltiplos clientes desenvolvido em Java, utilizando Sockets e Threads para gerenciar comunicações simultâneas. O projeto foi desenvolvido como parte da disciplina Redes de Computadores II, sob orientação do Professor Robson Siscoutto na UNOESTE.
+# 📡 ChatRedes
 
-O sistema implementa comunicação cliente-servidor, com suporte a chats privados, em grupo, gerenciamento de status, autenticação de usuários e armazenamento de dados via banco de dados.
+Sistema de **chat cliente-servidor via terminal**, em **Java com Sockets TCP e Threads**. O servidor atende vários clientes ao mesmo tempo (uma thread por conexão) e oferece cadastro e login de usuários, status, mensagens privadas com aceite, grupos com convite e aprovação dos membros, e entrega de mensagens pendentes. Os dados de usuários e grupos ficam em um banco **SQLite** (JDBC).
 
-🎯 Funcionalidades
-✅ Cadastro de usuários: nome completo, login, email e senha (sem duplicidade de nomes).
+Trabalho da disciplina **Redes de Computadores II** (Unoeste), orientado pelo Prof. Robson Siscoutto.
 
-✅ Sistema de Login e Logout.
+![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?logo=openjdk&logoColor=white)
+![Sockets](https://img.shields.io/badge/Java-Sockets%20%2B%20Threads-5382A1)
+![SQLite](https://img.shields.io/badge/SQLite-JDBC-003B57?logo=sqlite&logoColor=white)
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-000000?logo=intellijidea&logoColor=white)
 
-✅ Recuperação de senha mediante confirmação via e-mail.
+## 📸 Screenshot
 
-✅ Alteração de status: online, offline, ocupado, etc.
+Execução real com o servidor e dois clientes conectados (saída dos terminais renderizada como imagem):
 
-✅ Listagem de grupos e usuários online.
+![Dois clientes conversando no ChatRedes](screenshots/chat-dois-clientes.png)
 
-✅ Mensagens privadas mediante aceite prévio.
+## ✨ Funcionalidades
 
-✅ Criação de grupos, adição de usuários mediante convite e aceite.
+- **Cadastro e login** de usuários (nome completo, login, e-mail e senha), sem nomes duplicados.
+- **Status** do usuário (Online, Ocupado etc.), que vira Offline ao sair.
+- **Listagem** dos usuários online (com status) e dos grupos existentes (com número de membros).
+- **Mensagens privadas mediante aceite**: o destinatário precisa aceitar o contato (`aceitarprivado`) antes de receber.
+- **Grupos**: criação, convite de usuários e pedido de entrada, com aprovação de **todos** os membros.
+- Mensagens no grupo com **remetente e horário**; mensagem privada para membros específicos de um grupo.
+- Saída do grupo com **aviso aos demais membros**.
+- **Mensagens pendentes**: o que chega enquanto o usuário está offline é entregue quando ele volta.
+- Recuperação de senha a partir do e-mail cadastrado.
+- Comando `help` com o menu completo e exemplos de uso.
 
-✅ Comunicação em grupo com identificação de remetente e horário.
+## 🏗️ Arquitetura
 
-✅ Saída de grupo notificada aos demais membros.
+- **Servidor (`server.ChatServer`)**: escuta na porta **6789**, cria uma thread `ClientHandler` para cada cliente e mantém em memória os grupos e convites pendentes (os grupos são recarregados do banco ao iniciar).
+- **ClientHandler**: interpreta os comandos de texto de cada cliente e responde.
+- **Cliente (`client.ChatClient`)**: conecta em `localhost:6789`, usa uma thread para receber mensagens e a principal para enviar o que é digitado.
+- **Banco (`db.Database`)**: SQLite em `chatapp.db`, com as tabelas `usuarios`, `aceite_privado` e `grupo_usuario` (criadas automaticamente).
 
-✅ Solicitação de entrada em grupos mediante aprovação unânime.
+## 💬 Comandos
 
-✅ Envio de mensagens para um ou mais usuários, individual ou em grupo.
+| Comando | Descrição |
+|---|---|
+| `cadastrar Nome_Completo,login,email,senha` | Cria um usuário |
+| `login login,senha` | Entra no sistema |
+| `status novo_status` | Atualiza o status |
+| `msg Nome mensagem` | Mensagem privada (após aceite) |
+| `aceitarprivado Nome` | Aceita mensagens privadas de alguém |
+| `criargrupo grupo` | Cria um grupo |
+| `msggrupo grupo mensagem` | Mensagem para todo o grupo |
+| `msgprivgrupo grupo user1,user2 mensagem` | Mensagem para membros específicos do grupo |
+| `convidar grupo Nome` | Convida alguém (requer aceite dos membros) |
+| `solicitarentrada grupo` | Pede para entrar em um grupo |
+| `aceitar grupo Nome` / `recusar grupo Nome` | Responde a um pedido de entrada |
+| `sairgrupo grupo` | Sai do grupo e avisa os membros |
+| `listarusuarios` / `listargrupos` | Lista usuários online / grupos |
+| `listarpendentes` | Mostra mensagens recebidas enquanto estava offline |
+| `recuperarsenha email` | Recupera a senha pelo e-mail |
+| `help` / `sair` | Menu de ajuda / encerra a sessão |
 
-✅ Encaminhamento automático de mensagens não entregues quando usuário estiver online.
+## 📁 Estrutura do projeto
 
-✅ Arquitetura multi-threaded: servidor aceita múltiplas conexões simultâneas.
-
-
-🏗️ Arquitetura do Sistema
-Servidor (Java Socket):
-
-
-Thread principal para escutar novas conexões.
-
-
-Nova thread para cada cliente conectado.
-
-
-Cliente (Java Socket):
-
-
-Thread para envio de mensagens.
-
-
-Thread para recebimento de mensagens.
-
-
-Banco de Dados:
-
-
-Implementado com SQLite via JDBC.
-
-
-Tabelas para usuários, grupos, mensagens e status.
-
-
-IDE utilizada: IntelliJ IDEA
-
-
-Documentação completa: incluída na pasta, em formato PDF.
-
-
-🛠️ Tecnologias Utilizadas
-
-Java SE
-
-
-Java Socket API
-
-
-Java Threads
-
-
-JDBC (para acesso ao banco de dados)
-
-
-IntelliJ IDEA (como ambiente de desenvolvimento)
-
-
-🚀 Como Executar o Projeto
-✅ Pré-requisitos
-Java JDK 18 ou superior.
-
-IntelliJ IDEA (ou outra IDE de sua preferência).
-
-Banco de dados configurado conforme especificado na documentação PDF.
-
-Bibliotecas adicionais incluídas ou listadas na documentação.
-
-🔧 Passos
-Clone o repositório:
-
-git clone https://github.com/lukinha21/ChatRedes.git
-Abra o projeto no IntelliJ IDEA:
-
-File > Open > selecione a pasta do projeto.
-
-Configure o banco de dados conforme instruções no PDF de documentação.
-
-Compile o projeto:
-
-Build > Build Project.
-
-Execute o servidor:
-
-Localize a classe Servidor.java e execute-a.
-
-Execute os clientes:
-
-Localize a classe Cliente.java e execute quantas instâncias desejar.
-
-🗂️ Estrutura do Projeto
-ChatRedes/
+```
+java-socket-chat/
+├── Bancosql (leia)/
+│   ├── LEIA.txt                    # Dica sobre a biblioteca do SQLite
+│   └── sqlite-jdbc-3.36.0.3.jar    # Driver JDBC do SQLite
 ├── src/
-│   ├── cliente/
-│   │   └── Cliente.java
-│   ├── servidor/
-│   │   └── Servidor.java
-│   ├── modelos/
-│   │   ├── Usuario.java
-├── database/
-│   └── script.sql
-├── doc/
-│   └── Documentacao_ChatRedes.pdf
-├── README.md
-└── .gitignore
+│   ├── client/ChatClient.java
+│   ├── db/Database.java
+│   ├── model/Usuario.java
+│   └── server/
+│       ├── ChatServer.java
+│       └── ClientHandler.java
+└── chatapp.iml                     # Projeto do IntelliJ IDEA
+```
 
-📝 Documentação
-A documentação completa, contendo:
+O banco `chatapp.db` e a pasta `out/` são gerados ao executar/compilar e ficam fora do Git (`.gitignore`).
 
-Diagramas
+## ▶️ Como executar
 
-Modelagem do banco de dados
+Pré-requisito: **JDK 17 ou superior**.
 
-Descrição das classes
+### Pelo terminal
 
-Fluxos de mensagens
+```bash
+git clone https://github.com/lukinha21/java-socket-chat.git
+cd java-socket-chat
 
-Prints de execução
+# Compilar (no Windows, troque ":" por ";" no classpath)
+javac -d out -cp "Bancosql (leia)/sqlite-jdbc-3.36.0.3.jar" $(find src -name "*.java")
 
-está disponível no arquivo:
+# 1) Iniciar o servidor
+java -cp "out:Bancosql (leia)/sqlite-jdbc-3.36.0.3.jar" server.ChatServer
 
-/doc/Documentacao_ChatRedes.pdf
+# 2) Em outros terminais, abrir quantos clientes quiser
+java -cp out client.ChatClient
+```
 
-⚙️ Principais Comandos no Chat incluida na Documentação do projeto
+### Pelo IntelliJ IDEA
 
-👥 Contribuidores
+1. Abra a pasta do projeto (`File > Open`).
+2. Adicione `Bancosql (leia)/sqlite-jdbc-3.36.0.3.jar` às bibliotecas do projeto (se der erro de banco, remova e adicione de novo, como diz o `LEIA.txt`).
+3. Execute `server.ChatServer` e depois uma ou mais instâncias de `client.ChatClient`.
 
-Lucas Alexandre
+No cliente, digite `help` para ver todos os comandos.
 
-Beatriz Araújo
+## 👨‍💻 Autores
 
+**Lucas Alexandre**, estudante de Sistemas de Informação na Unoeste
 
-🎓 Orientador
+- GitHub: [@lukinha21](https://github.com/lukinha21)
+- LinkedIn: [Lucas Silva](https://www.linkedin.com/in/lucas-silva-025583180)
 
-Professor Robson Siscoutto
-
-University of the West of São Paulo - UNOESTE
-
+Projeto desenvolvido com **Beatriz Araújo**.
